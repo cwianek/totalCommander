@@ -24,7 +24,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
-                        <TableView fx:id="rightTableView" onDragDropped="#rightTableDragDropped" onDragOver="#rightTableDragOver" onMouseClicked="#rightClick" prefHeight="378.0" prefWidth="298.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="rightTableView" onDragDetected="#rightTableDragDetected" onDragDropped="#rightTableDragDropped" onDragOver="#rightTableDragOver" onKeyPressed="#rightTabPressed" onMouseClicked="#rightClick" prefHeight="378.0" prefWidth="298.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
                             <TableColumn fx:id="rightColumn1" prefWidth="75.0" text="C1" />
                             <TableColumn fx:id="rightColumn2" prefWidth="75.0" text="C2" />
@@ -42,7 +42,7 @@
               <content>
                 <AnchorPane>
                      <children>
-                        <TableView fx:id="leftTableView" onDragDetected="#leftTableDragDetected" onMouseClicked="#leftClick" prefHeight="378.0" prefWidth="298.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TableView fx:id="leftTableView" onDragDetected="#leftTableDragDetected" onDragDropped="#leftTableDragDropped" onDragOver="#leftTableDragOver" onKeyPressed="#leftTabPressed" onMouseClicked="#leftClick" prefHeight="378.0" prefWidth="298.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columns>
                             <TableColumn fx:id="leftColumn1" prefWidth="75.0" text="C1" />
                             <TableColumn fx:id="leftColumn2" prefWidth="75.0" text="C2" />

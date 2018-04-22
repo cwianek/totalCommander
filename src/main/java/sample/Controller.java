@@ -99,6 +99,46 @@ public class Controller {
     }
 
     @FXML
+    private void rightTabPressed(KeyEvent event){
+        if(event.getCode() == KeyCode.ENTER) {
+            leftTableView.getSelectionModel().clearSelection();
+            Object item = rightTableView.getSelectionModel().getSelectedItem();
+            File f = new File(item.toString());
+            if (f.isDirectory()) {
+                showDirectory(f, rightTableView);
+            } else if (f.isFile()) {
+                try {
+                    Desktop.getDesktop().open(f);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }else if(event.getCode() == KeyCode.BACK_SPACE){
+            rightRootDirClick();
+        }
+    }
+
+    @FXML
+    private void leftTabPressed(KeyEvent event){
+        if(event.getCode() == KeyCode.ENTER) {
+            rightTableView.getSelectionModel().clearSelection();
+            Object item = leftTableView.getSelectionModel().getSelectedItem();
+            File f = new File(item.toString());
+            if (f.isDirectory()) {
+                showDirectory(f, leftTableView);
+            } else if (f.isFile()) {
+                try {
+                    Desktop.getDesktop().open(f);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        }else if(event.getCode() == KeyCode.BACK_SPACE){
+            leftRootDirClick();
+        }
+    }
+
+    @FXML
     private void polishLanguage(){
         locale = new Locale("pl","PL");
         resourceBundle = ResourceBundle.getBundle("lang", locale);
@@ -185,7 +225,7 @@ public class Controller {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        dialog.close();
+                        dialog.close(); refreshView();
                     }
                 });
                 return null;
@@ -242,7 +282,7 @@ public class Controller {
                 Platform.runLater(new Runnable() {
                     @Override
                     public void run() {
-                        dialog.close();
+                        dialog.close(); refreshView();
                     }
                 });
                 return null;
@@ -275,7 +315,6 @@ public class Controller {
         result.ifPresent(path -> {
             move(items, path);
         });
-        refreshView();
     }
 
     @FXML
@@ -326,9 +365,7 @@ public class Controller {
         }
     }
 
-    @FXML
-    private void leftTableDragDetected(MouseEvent e) {
-        System.out.println("drag detected");
+    private void dragDetected(MouseEvent e){
         TableView<File> list = (TableView<File>) e.getSource();
         Dragboard db = list.startDragAndDrop(TransferMode.ANY);
 
@@ -336,6 +373,16 @@ public class Controller {
         content.putString(list.getSelectionModel().getSelectedItem().getName());
         db.setContent(content);
         e.consume();
+    }
+
+    @FXML
+    private void rightTableDragDetected(MouseEvent e){
+       dragDetected(e);
+    }
+
+    @FXML
+    private void leftTableDragDetected(MouseEvent e) {
+      dragDetected(e);
     }
 
     @FXML
@@ -382,6 +429,40 @@ public class Controller {
     }
 
     @FXML
+    private void leftTableDragOver(DragEvent event) {
+        if (event.getGestureSource() != event.getTarget() && event.getDragboard().hasString()) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        event.consume();
+    }
+
+
+
+    @FXML
+    private void leftTableDragDropped(DragEvent event) {
+        TableView<File> listTarget = (TableView<File>) event.getGestureTarget();
+        Dragboard db = event.getDragboard();
+        boolean success = false;
+        if (db.hasString()) {
+            File s = new File(rightCurrentDirectoryPath + db.getString());
+            listTarget.getItems().add(new File(db.getString()));
+            success = true;
+            try {
+                if (s.isDirectory()) {
+                    FileUtils.copyDirectory(s, new File(leftCurrentDirectoryPath + db.getString()));
+                } else if (s.isFile()) {
+                    FileUtils.copyFileToDirectory(s, new File(leftCurrentDirectoryPath));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        event.setDropCompleted(success);
+        event.consume();
+        refreshView();
+    }
+
+    @FXML
     private void rightTableDragDropped(DragEvent event) {
         TableView<File> listTarget = (TableView<File>) event.getGestureTarget();
         Dragboard db = event.getDragboard();
@@ -402,7 +483,6 @@ public class Controller {
         }
         event.setDropCompleted(success);
         event.consume();
-        System.out.println("drag released");
         refreshView();
     }
 
